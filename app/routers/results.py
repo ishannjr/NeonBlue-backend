@@ -155,13 +155,13 @@ async def get_experiment_results(
     variants = {v.id: v for v in experiment.variants}
     
     # Get assignment counts per variant
+    # Note: We don't filter assignments by time range - all assignments to this
+    # experiment are valid. Time filtering only applies to events for flexible analysis.
     assignment_query = db.query(
         Assignment.variant_id,
         func.count(Assignment.id).label("count")
     ).filter(
-        Assignment.experiment_id == experiment_id,
-        Assignment.assigned_at >= analysis_start,
-        Assignment.assigned_at <= analysis_end
+        Assignment.experiment_id == experiment_id
     ).group_by(Assignment.variant_id)
     
     assignment_counts = {r.variant_id: r.count for r in assignment_query.all()}
@@ -187,11 +187,13 @@ async def get_experiment_results(
     # Get all relevant events
     events = db.query(Event).filter(and_(*event_subquery_conditions)).all()
     
-    # Filter events to only those after user's assignment
+    # Filter events to only those at or after user's assignment
+    # Using >= to include events that happen at the same second as assignment
+    # (common in rapid testing scenarios and immediate post-assignment actions)
     valid_events = []
     for event in events:
         user_assignment = user_assignments.get(event.user_id)
-        if user_assignment and event.timestamp > user_assignment.assigned_at:
+        if user_assignment and event.timestamp >= user_assignment.assigned_at:
             valid_events.append((event, user_assignment.variant_id))
     
     # Aggregate metrics per variant
