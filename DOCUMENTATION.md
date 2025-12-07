@@ -156,7 +156,7 @@ The backend is deployed to **AWS EC2** with single instance
 
 **Migration from SQLite to PostgreSQL**
 
-SQLite is a single-writer database — it cannot handle concurrent write operations. For an experimentation platform where multiple users are being assigned to variants and events are being recorded simultaneously, this becomes a critical bottleneck. If we can't reliably store assignment and event data under high load, the entire purpose of running experiments is compromised. PostgreSQL supports concurrent reads and writes, proper connection pooling, and scales horizontally with read replicas — making it essential for production workloads.
+SQLite is a single-writer database — it cannot handle concurrent write operations. For an experimentation platform where multiple users are being assigned to variants and events are being recorded simultaneously, this becomes a critical bottleneck. If we can't reliably store assignment and event data under high load, the entire purpose of running experiments is compromised. PostgreSQL supports concurrent reads and writes, proper connection pooling, and scales horizontally with read replicas — making it essential for production workloads. And apart from this I will also make sure that the JWT tokens are sent as httpOnly cookie not not displayed in the response because that is the correct way to do it with security and with the given test experiment had to return it in the response body so it can be used to authorize.
 
 ---
 
