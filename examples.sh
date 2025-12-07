@@ -1,10 +1,8 @@
-
+#!/bin/bash
 
 set -e
 
 BASE_URL="${API_URL:-http://localhost:8000}"
-TOKEN="${API_TOKEN:-test-token-1}"
-AUTH_HEADER="Authorization: Bearer $TOKEN"
 
 echo "=============================================="
 echo "Experimentation API - Example Usage"
@@ -16,10 +14,18 @@ echo ">>> 1. Health Check"
 curl -s "$BASE_URL/health" | python3 -m json.tool
 echo ""
 
+echo ">>> 2. Get JWT Token (Login as admin)"
+TOKEN_RESPONSE=$(curl -s -X POST "$BASE_URL/auth/token" \
+  -H "Content-Type: application/json" \
+  -d '{"username": "admin", "password": "admin123"}')
+echo "$TOKEN_RESPONSE" | python3 -m json.tool
 
+TOKEN=$(echo "$TOKEN_RESPONSE" | python3 -c "import sys, json; print(json.load(sys.stdin)['access_token'])")
+AUTH_HEADER="Authorization: Bearer $TOKEN"
+echo "Token obtained successfully!"
+echo ""
 
-
-echo ">>> 2. Create Experiment (Button Color Test)"
+echo ">>> 3. Create Experiment (Button Color Test)"
 EXPERIMENT_RESPONSE=$(curl -s -X POST "$BASE_URL/experiments" \
   -H "$AUTH_HEADER" \
   -H "Content-Type: application/json" \
@@ -43,29 +49,28 @@ EXPERIMENT_RESPONSE=$(curl -s -X POST "$BASE_URL/experiments" \
   }')
 echo "$EXPERIMENT_RESPONSE" | python3 -m json.tool
 
-
 EXPERIMENT_ID=$(echo "$EXPERIMENT_RESPONSE" | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
 echo "Created experiment ID: $EXPERIMENT_ID"
 echo ""
 
-echo ">>> 3. List All Experiments"
+echo ">>> 4. List All Experiments"
 curl -s "$BASE_URL/experiments" \
   -H "$AUTH_HEADER" | python3 -m json.tool
 echo ""
 
-echo ">>> 4. Get Experiment Details"
+echo ">>> 5. Get Experiment Details"
 curl -s "$BASE_URL/experiments/$EXPERIMENT_ID" \
   -H "$AUTH_HEADER" | python3 -m json.tool
 echo ""
 
-echo ">>> 5. Start Experiment (Status: draft -> running)"
+echo ">>> 6. Start Experiment (Status: draft -> running)"
 curl -s -X PATCH "$BASE_URL/experiments/$EXPERIMENT_ID" \
   -H "$AUTH_HEADER" \
   -H "Content-Type: application/json" \
   -d '{"status": "running"}' | python3 -m json.tool
 echo ""
 
-echo ">>> 6. Assign Users to Variants"
+echo ">>> 7. Assign Users to Variants"
 echo ""
 
 echo "--- User 'user-001' first assignment:"
@@ -77,7 +82,7 @@ IS_NEW_1=$(echo "$ASSIGNMENT_1" | python3 -c "import sys, json; print(json.load(
 echo "Assigned to: $VARIANT_1 (is_new_assignment: $IS_NEW_1)"
 echo ""
 
-echo "--- User 'user-001' second assignment (IDEMPOTENCY TEST - should return same variant):"
+echo "--- User 'user-001' second assignment (IDEMPOTENCY TEST):"
 ASSIGNMENT_1B=$(curl -s "$BASE_URL/experiments/$EXPERIMENT_ID/assignment/user-001" \
   -H "$AUTH_HEADER")
 echo "$ASSIGNMENT_1B" | python3 -m json.tool
@@ -100,10 +105,10 @@ done
 echo "Assigned users user-002 through user-010"
 echo ""
 
-echo ">>> 7. Record Events"
+echo ">>> 8. Record Events"
 echo ""
 
-echo "--- Recording a single click event for user-001:"
+echo "--- Recording a click event for user-001:"
 curl -s -X POST "$BASE_URL/events" \
   -H "$AUTH_HEADER" \
   -H "Content-Type: application/json" \
@@ -168,10 +173,10 @@ curl -s -X POST "$BASE_URL/events/batch" \
   }' | python3 -m json.tool
 echo ""
 
-echo ">>> 8. Query Events"
+echo ">>> 9. Query Events"
 echo ""
 
-echo "--- List all events:"
+echo "--- List recent events:"
 curl -s "$BASE_URL/events?limit=5" \
   -H "$AUTH_HEADER" | python3 -m json.tool
 echo ""
@@ -181,7 +186,7 @@ curl -s "$BASE_URL/events/types" \
   -H "$AUTH_HEADER" | python3 -m json.tool
 echo ""
 
-echo ">>> 9. Get Experiment Results"
+echo ">>> 10. Get Experiment Results"
 echo ""
 
 echo "--- Full results:"
@@ -194,22 +199,17 @@ curl -s "$BASE_URL/experiments/$EXPERIMENT_ID/results?format=summary" \
   -H "$AUTH_HEADER" | python3 -m json.tool
 echo ""
 
-echo "--- With time series (for charts):"
-curl -s "$BASE_URL/experiments/$EXPERIMENT_ID/results?include_time_series=true&time_series_granularity=hour" \
-  -H "$AUTH_HEADER" | python3 -m json.tool
-echo ""
-
 echo "--- Filter by event type (purchases only):"
 curl -s "$BASE_URL/experiments/$EXPERIMENT_ID/results?event_types=purchase" \
   -H "$AUTH_HEADER" | python3 -m json.tool
 echo ""
 
-echo ">>> 10. Export Experiment Data"
+echo ">>> 11. Export Experiment Data"
 curl -s "$BASE_URL/experiments/$EXPERIMENT_ID/results/export" \
   -H "$AUTH_HEADER" | python3 -m json.tool
 echo ""
 
-echo ">>> 11. Authentication Error Examples"
+echo ">>> 12. Authentication Error Examples"
 echo ""
 
 echo "--- Missing token (should return 403):"
@@ -221,7 +221,7 @@ curl -s -w "\nHTTP Status: %{http_code}\n" "$BASE_URL/experiments" \
   -H "Authorization: Bearer invalid-token" 2>&1 | head -5
 echo ""
 
-echo ">>> 12. Complete the Experiment"
+echo ">>> 13. Complete the Experiment"
 curl -s -X PATCH "$BASE_URL/experiments/$EXPERIMENT_ID" \
   -H "$AUTH_HEADER" \
   -H "Content-Type: application/json" \
@@ -231,4 +231,3 @@ echo ""
 echo "=============================================="
 echo "Example script completed successfully!"
 echo "=============================================="
-
