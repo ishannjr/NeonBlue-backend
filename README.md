@@ -2,6 +2,22 @@
 
 A RESTful A/B testing API service for managing experiments, assigning users to variants, recording events, and analyzing experiment performance.
 
+---
+
+## Deployed (Backend and Frontend)
+
+| Service | URL |
+|---------|-----|
+| **Backend API** | [ec2-3-136-108-183.us-east-2.compute.amazonaws.com:8000](http://ec2-3-136-108-183.us-east-2.compute.amazonaws.com:8000) |
+| **API Docs (Swagger)** | [ec2-3-136-108-183.us-east-2.compute.amazonaws.com:8000/docs](http://ec2-3-136-108-183.us-east-2.compute.amazonaws.com:8000/docs) |
+| **Frontend Dashboard** | [neon-blue-frontend.vercel.app](https://neon-blue-frontend.vercel.app/) |
+
+**To use the frontend:**
+1. Get a JWT token from `POST /auth/token` with `{"username": "admin", "password": "admin123"}`
+2. Enter the token in the frontend to view experiment analytics
+
+---
+
 ## Quick Start
 
 ### Option 1: Docker (Recommended)

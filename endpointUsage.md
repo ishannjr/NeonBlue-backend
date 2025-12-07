@@ -4,6 +4,30 @@ All endpoints (except `/health` and `/auth/*`) require JWT Bearer token authenti
 
 ---
 
+## Quick Start: Run Demo Script
+
+The `runTest.sh` script creates 3 realistic e-commerce A/B tests with different confidence levels:
+
+| Experiment | Users | Expected Confidence |
+|------------|-------|---------------------|
+| Dark Mode Beta | 20 | LOW |
+| Checkout Button | 250 | MEDIUM |
+| Free Shipping | 1200 | HIGH |
+
+**Run locally:**
+```bash
+./runTest.sh
+# or
+./runTest.sh http://localhost:8000
+```
+
+**Run against deployed EC2:**
+```bash
+./runTest.sh http://ec2-3-136-108-183.us-east-2.compute.amazonaws.com:8000
+```
+
+---
+
 ## Authentication Endpoints
 
 ### `POST /auth/token` - Login and get JWT token
