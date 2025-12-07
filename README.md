@@ -10,24 +10,20 @@ A RESTful A/B testing API service for managing experiments, assigning users to v
 # Build and run
 docker-compose up --build
 
-# API will be available at http://localhost:8000
-# Documentation at http://localhost:8000/docs
+# Would be running at http://localhost:8000
+# Documentation would be available at http://localhost:8000/docs
 ```
 
 ### Option 2: Local Development
 
 ```bash
-# Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  
 
-# Install dependencies
 pip install -r requirements.txt
 
-# Run the server
 uvicorn app.main:app --reload
 
-# API will be available at http://localhost:8000
 ```
 
 ## API Endpoints & Usage
