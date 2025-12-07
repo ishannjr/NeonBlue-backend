@@ -18,6 +18,15 @@ A RESTful A/B testing API service for managing experiments, assigning users to v
 
 ---
 
+## 📚 Documentation
+
+| Document | Description |
+|----------|-------------|
+| **[DOCUMENTATION.md](./DOCUMENTATION.md)** | Architecture decisions, trade-offs, and scaling considerations |
+| **[endpointUsage.md](./endpointUsage.md)** | API endpoints with curl examples and demo script |
+
+---
+
 ## Quick Start
 
 ### Option 1: Docker (Recommended)
