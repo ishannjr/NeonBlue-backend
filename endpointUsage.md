@@ -16,14 +16,14 @@ The `runTest.sh` script creates 3 realistic e-commerce A/B tests with different 
 
 **Run locally:**
 ```bash
-./runTest.sh
+bash runTest.sh
 # or
-./runTest.sh http://localhost:8000
+bash runTest.sh http://localhost:8000
 ```
 
 **Run against deployed EC2:**
 ```bash
-./runTest.sh http://ec2-3-136-108-183.us-east-2.compute.amazonaws.com:8000
+bash runTest.sh http://ec2-3-136-108-183.us-east-2.compute.amazonaws.com:8000
 ```
 
 ---
