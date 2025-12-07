@@ -30,6 +30,9 @@ bash runTest.sh http://ec2-3-136-108-183.us-east-2.compute.amazonaws.com:8000
 
 ## Authentication Endpoints
 
+![Alt text](./images/authtoken.png)
+
+
 ### `POST /auth/token` - Login and get JWT token
 ```bash
 curl -X POST http://localhost:8000/auth/token \
