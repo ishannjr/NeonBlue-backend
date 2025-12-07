@@ -18,7 +18,7 @@ A RESTful A/B testing API service for managing experiments, assigning users to v
 
 ---
 
-## 📚 Documentation
+## Documentation (Archietecture and Design Discussion / Endpoint information)
 
 | Document | Description |
 |----------|-------------|
